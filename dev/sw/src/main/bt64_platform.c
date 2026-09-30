@@ -34,6 +34,7 @@
 
 #include "hid_usage.h"
 #include "bt64_parser.h"
+#include "bt64_ble_kbd.h"
 
 //----------------------------------------------------------------------------//
 // Globals
@@ -48,10 +49,12 @@ static void bt64_init(int argc, const char** argv) {
 
 	logi("bt64: init()\n");
 	bt64_mt_parser_init();
+	bt64_ble_kbd_init();
 }
 
 static void bt64_on_init_complete(void) {
 	uni_bt_enable_new_connections_unsafe(true);
+	bt64_ble_kbd_start();
 
 //	uni_bt_del_keys_unsafe();
 //	uni_bt_list_keys_unsafe();

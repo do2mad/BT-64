@@ -40,6 +40,7 @@ typedef enum
 	KB_OWNER_CTL1,
 	KB_OWNER_CTL2,
 	KB_OWNER_FEED,
+	KB_OWNER_BLE,
 	KB_OWNER_COUNT
 } t_bt64_kb_owner;
 

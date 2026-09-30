@@ -1,0 +1,24 @@
+// BT-64 BLE keyboard service - GATT database
+// Regenerate the header (from the repo root) with:
+//   python3 ext/bluepad32/external/btstack/tool/compile_gatt.py dev/sw/src/main/bt64_ble_kbd.gatt dev/sw/src/main/bt64_ble_kbd.gatt.h
+
+PRIMARY_SERVICE, GAP_SERVICE
+CHARACTERISTIC, GAP_DEVICE_NAME, READ, "Blue-64"
+
+PRIMARY_SERVICE, GATT_SERVICE
+CHARACTERISTIC, GATT_DATABASE_HASH, READ,
+
+// Blue-64 keyboard service
+PRIMARY_SERVICE, C64B0001-B1E6-4A64-9C64-6B7E3F1A2D00
+
+// Key state: 2 bytes [flags, key]
+//   flags bit0 SHIFT, bit1 C=, bit2 CTRL, bit3 RESTORE
+//   key   = (PA << 3) | PB   (C64 matrix column/row), 0xFF = no key
+CHARACTERISTIC, C64B0002-B1E6-4A64-9C64-6B7E3F1A2D00, WRITE | WRITE_WITHOUT_RESPONSE | DYNAMIC,
+
+// Text feed (Blue-64 macro syntax, e.g. "load\"*\",8,1~ret~")
+//   byte0: bit0 first chunk, bit1 last chunk; rest: text
+CHARACTERISTIC, C64B0003-B1E6-4A64-9C64-6B7E3F1A2D00, WRITE | DYNAMIC,
+
+// Info: [protocol version, status bits (bit0 text feed busy)]
+CHARACTERISTIC, C64B0004-B1E6-4A64-9C64-6B7E3F1A2D00, READ | DYNAMIC,

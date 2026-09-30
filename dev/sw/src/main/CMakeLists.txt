@@ -14,6 +14,7 @@ set(srcs
 	"bt64_parser_gp.c"
 	"bt64_parser.c"
 	"bt64_update.c"
+	"bt64_ble_kbd.c"
 	"bt64_threadsafe.c")
 
 set(requires "bluepad32" "btstack" "fatfs")
