@@ -1,3 +1,75 @@
+<!-- fork-start: this section is maintained in the do2mad fork, the original README follows below -->
+# BT-64 – extended feature set (fork by do2mad)
+
+This is a fork of [sideprojectslab/BT-64](https://github.com/sideprojectslab/BT-64) with
+additional features. It is maintained by Martin Oswald ([do2mad](https://github.com/do2mad),
+[1mhz.de](https://1mhz.de)) with the friendly agreement of Vittorio (SideProjectsLab), who keeps
+maintaining the original firmware. Everything the original BT-64 firmware does still works the same
+way – the extensions only add to it.
+
+**The original README follows further below.**
+
+## What's added
+
+### BLE keyboard service – use your phone as the C64 keyboard
+
+iOS and Android apps cannot act as a Bluetooth HID keyboard, so the fork adds a small Bluetooth LE
+service that a phone app talks to directly. No extra hardware is needed.
+
+- Use the **Blue-64 Keyboard** app: a C64-style keyboard with all PETSCII graphics legends,
+  SHIFT / C= / CTRL / RESTORE, text snippets and short BASIC listings typed for you.
+  - iPhone: [public TestFlight beta](https://testflight.apple.com/join/jEn4tsP7)
+  - Android (8.0+): [APK in the app release](https://github.com/do2mad/blue64-keyboard-ios/releases/latest)
+  - Screenshots, documentation and the protocol: [do2mad/blue64-keyboard-ios](https://github.com/do2mad/blue64-keyboard-ios)
+- The BT-64 shows up as **Blue-64** in the app.
+- Bluetooth keyboards and gamepads keep working at the same time.
+- All keys are released when the phone disconnects.
+- Nothing in Bluepad32 is changed; the firmware update routine and the bootloader are untouched.
+
+Technical details: service UUID `C64B0001-B1E6-4A64-9C64-6B7E3F1A2D00`, key characteristic
+`[flags, key]` (flags = SHIFT / C= / CTRL / RESTORE, key = C64 matrix position PA×8+PB), text
+characteristic feeding the existing macro feed, info characteristic with protocol version and busy
+flag. Source: `dev/sw/src/main/bt64_ble_kbd.c/.h/.gatt`.
+
+## Install
+
+1. Download `application.bin` from the [latest release of this fork](https://github.com/do2mad/BT-64/releases/latest).
+2. Copy it to the root of a FAT-formatted SD card, insert the card into the BT-64 and switch the
+   C64 on – the firmware updates itself, exactly like an official update.
+3. Open the app, it finds the BT-64 by itself.
+
+**Going back:** use the official `application.bin` from
+[sideprojectslab/BT-64 releases](https://github.com/sideprojectslab/BT-64/releases) the same way.
+
+## Branches and versions
+
+- `ble-keyboard` – the extended firmware (this branch, default branch of the fork).
+- `main` – unchanged copy of the original firmware.
+- Release tags look like `v1.12-ble1`: original firmware version + extension revision.
+- Updates of the original firmware (e.g. new Bluepad32 versions) are merged into this fork regularly.
+
+## Feedback, issues
+
+Problems with the extended features: please open an issue **in this fork**
+([do2mad/BT-64/issues](https://github.com/do2mad/BT-64/issues)), not in the original project.
+For the BT-64 itself, see the SPL [Discord](https://discord.gg/gJsCgebkDw).
+
+## Related
+
+- [Pico64 Keyboard](https://github.com/do2mad/pico64-keyboard) – a minimal DIY take on the same idea
+  with a Raspberry Pi Pico 2 W, using the same BLE protocol and app.
+
+## License
+
+Same as the original project: software under the Apache License 2.0, hardware design files under
+CC BY-NC-ND 4.0 (see below). The BLE keyboard service is © 2026 Martin Oswald, Apache-2.0.
+BT-64 © SideProjectsLab. This fork is not an official SideProjectsLab product – please don't ask
+Vittorio for support with the extended features.
+
+---
+
+<!-- fork-end -->
+
 # BT-64
 
 If you would like to get in touch with the developer, please join the SPL [Discord](https://discord.gg/gJsCgebkDw) server.
