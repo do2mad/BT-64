@@ -53,8 +53,13 @@
 
 #define KEY_QUEUE_LEN 32
 
-#define ALL_FLAGS (BT64_BLE_KBD_FLAG_SHIFT | BT64_BLE_KBD_FLAG_CMDR | \
-                   BT64_BLE_KBD_FLAG_CTRL  | BT64_BLE_KBD_FLAG_RESTORE)
+#define ALL_FLAGS (BT64_BLE_KBD_FLAG_SHIFT | BT64_BLE_KBD_FLAG_CMDR    | \
+                   BT64_BLE_KBD_FLAG_CTRL  | BT64_BLE_KBD_FLAG_RESTORE | \
+                   BT64_BLE_KBD_FLAG_RSHIFT)
+
+// matrix position of the right SHIFT key (PA6 / PB4)
+#define RSHIFT_COL 6
+#define RSHIFT_ROW 4
 
 // defined in bt64_keyboard.c (not exported in the header)
 extern bool bt64_keyboard_set_mux(t_bt64_keyboard *h, unsigned int col, unsigned int row);
@@ -94,7 +99,13 @@ _Static_assert(sizeof(adv_data) <= 31, "adv_data too big");
 
 static void apply_state(uint8_t flags, uint8_t key)
 {
-	if(flags & BT64_BLE_KBD_FLAG_SHIFT)   bt64_keyboard_shft_psh(&keyboard);
+	// Right SHIFT alone: press its own matrix position. Together with another
+	// key only the SHIFT line (left SHIFT) is possible - the multiplexer
+	// addresses one matrix position at a time.
+	bool rshift_only = (flags & BT64_BLE_KBD_FLAG_SHIFT) && (flags & BT64_BLE_KBD_FLAG_RSHIFT) &&
+	                   (key == BT64_BLE_KBD_KEY_NONE);
+
+	if((flags & BT64_BLE_KBD_FLAG_SHIFT) && !rshift_only) bt64_keyboard_shft_psh(&keyboard);
 	else                                  bt64_keyboard_shft_rel(&keyboard);
 
 	if(flags & BT64_BLE_KBD_FLAG_CMDR)    bt64_keyboard_cmdr_psh(&keyboard);
@@ -106,7 +117,9 @@ static void apply_state(uint8_t flags, uint8_t key)
 	if(flags & BT64_BLE_KBD_FLAG_RESTORE) bt64_keyboard_rest_psh(&keyboard);
 	else                                  bt64_keyboard_rest_rel(&keyboard);
 
-	if(key == BT64_BLE_KBD_KEY_NONE)
+	if(rshift_only)
+		bt64_keyboard_set_mux(&keyboard, RSHIFT_COL, RSHIFT_ROW);
+	else if(key == BT64_BLE_KBD_KEY_NONE)
 		bt64_keyboard_clr_mux(&keyboard);
 	else
 		bt64_keyboard_set_mux(&keyboard, (key >> 3) & 7, key & 7);

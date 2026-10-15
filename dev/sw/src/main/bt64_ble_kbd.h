@@ -19,6 +19,9 @@
 #define BT64_BLE_KBD_FLAG_CMDR    0x02
 #define BT64_BLE_KBD_FLAG_CTRL    0x04
 #define BT64_BLE_KBD_FLAG_RESTORE 0x08
+// Together with SHIFT: it is the RIGHT shift key. The BT-64 has one SHIFT line
+// (left SHIFT); right SHIFT alone is pressed via the matrix position PA6/PB4.
+#define BT64_BLE_KBD_FLAG_RSHIFT  0x10
 
 #define BT64_BLE_KBD_KEY_NONE     0xFF
 
